@@ -59,7 +59,7 @@
       const css = `
       :host { all: initial; }
       *, *::before, *::after { box-sizing: border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
-      .bc-container { position: fixed; ${options.position === "left" ? "left" : "right"}: 20px; bottom: 20px; }
+      .bc-container { position: fixed; ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px)); bottom: max(20px, env(safe-area-inset-bottom, 20px)); }
       .bc-launcher {
         display: inline-flex; align-items: center; justify-content: center;
         width: 56px; height: 56px; border-radius: 9999px; border: none; cursor: pointer;
@@ -129,6 +129,16 @@
       .bc-badge {
         display: inline-flex; align-items: center; gap: 6px; font-size: 11px; opacity: 0.7;
       }
+      .bc-powered {
+        padding: 8px 12px;
+        text-align: center;
+        font-size: 11px;
+        opacity: 0.75;
+        border-top: 1px solid ${options.darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"};
+        background: ${options.darkMode ? "rgba(255,255,255,0.02)" : "#ffffff"};
+      }
+      .bc-powered a { color: ${options.accentColor}; text-decoration: none; }
+      .bc-powered a:hover { text-decoration: underline; }
       `;
       const style = document.createElement("style");
       style.textContent = css;
@@ -175,6 +185,11 @@
       panel.appendChild(header);
       panel.appendChild(messages);
       panel.appendChild(inputBar);
+
+      const powered = document.createElement("div");
+      powered.className = "bc-powered";
+      powered.innerHTML = `Powered by <a href="https://vividsol.ai" target="_blank" rel="noopener noreferrer">Vividsol.ai</a>`;
+      panel.appendChild(powered);
       container.appendChild(panel);
       container.appendChild(launcher);
 
