@@ -96,7 +96,7 @@
         padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; flex: 1 1 auto;
       }
       .bc-msg {
-        display: flex; align-items: flex-end; gap: 8px; max-width: 90%;
+        display: flex; align-items: flex-start; gap: 8px; max-width: 90%;
       }
       .bc-msg-user { align-self: flex-end; flex-direction: row-reverse; }
       .bc-bubble {
@@ -109,9 +109,10 @@
         background: ${options.darkMode ? "rgba(255,255,255,0.06)" : "#f4f6fb"}; color: inherit; border-bottom-left-radius: 4px;
       }
       .bc-msg .bc-mini-avatar {
-        width: 22px; height: 22px; border-radius: 9999px; overflow: hidden; background: ${options.darkMode ? "#1f2937" : "#e5e7eb"};
+        width: 22px; height: 22px; min-width: 22px; min-height: 22px; flex: 0 0 22px; border-radius: 9999px; overflow: hidden; background: ${options.darkMode ? "#1f2937" : "#e5e7eb"};
         display: inline-flex; align-items: center; justify-content: center; font-size: 11px; color: ${options.darkMode ? "#e5e7eb" : "#111827"};
       }
+      .bc-msg .bc-mini-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .bc-typing { font-size: 12px; opacity: 0.7; }
 
       .bc-input {
