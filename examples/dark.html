@@ -16,15 +16,16 @@
   </head>
   <body>
     <div class="container">
-      <h1>Brand Chatbot — Dark</h1>
+      <h1>Brand Chatbot By Vividsol.Ai — Dark</h1>
+      <h3>Developer by <a href="https://www.omerfayyaz.com" target="_blank">Omer Fayyaz</a></h3>
       <p>A dark themed example with custom colors, left position and HTML responses allowed.</p>
     </div>
 
     <script src="../brand-chatbot.js"></script>
     <script>
       window.BrandChatbot.init({
-        webhookUrl: "https://your-n8n.example.com/webhook/abc123",
-        botName: "Night Owl",
+        webhookUrl: "https://automation.vividsol.com/webhook/brand-bot",
+        botName: "Branded Bot By Vividsol.Ai",
         brandColor: "#6d28d9",
         accentColor: "#22c55e",
         botAvatarUrl: "",
@@ -39,7 +40,7 @@
         transformResponse: (data) => {
           const html = data?.html;
           if (html) return { html };
-          const text = data?.reply || data?.message || data?.text || "No response";
+          const text = data?.reply || data?.message || data?.text || data?.output || "No response";
           return { text };
         },
       });

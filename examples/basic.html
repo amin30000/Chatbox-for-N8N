@@ -14,7 +14,8 @@
   </head>
   <body>
     <div class="container">
-      <h1>Brand Chatbot — Basic</h1>
+      <h1>Brand Chatbot By Vividsol.Ai — Basic</h1>
+      <h3>Developer by <a href="https://www.omerfayyaz.com" target="_blank">Omer Fayyaz</a></h3>
       <p>This page shows how to embed the chatbot and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
       <p>
         Edit <code>webhookUrl</code> below with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>brand-chatbot</code>.
@@ -24,8 +25,8 @@
     <script src="../brand-chatbot.js"></script>
     <script>
       window.BrandChatbot.init({
-        webhookUrl: "https://your-n8n.example.com/webhook/abc123",
-        botName: "Acme Assistant",
+        webhookUrl: "https://automation.vividsol.com/webhook/brand-bot",
+        botName: "Branded Bot By Vividsol.Ai",
         brandColor: "#2563eb",
         accentColor: "#0ea5e9",
         botAvatarUrl: "",
@@ -36,7 +37,7 @@
         openByDefault: true,
         allowHTMLInResponses: false,
         transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }),
-        transformResponse: (data) => data?.reply || data?.message || data?.text || "No response",
+        transformResponse: (data) => data?.reply || data?.message || data?.text || data?.output || "No response",
       });
     </script>
   </body>

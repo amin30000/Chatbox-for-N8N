@@ -336,7 +336,7 @@
           if (typeof options.transformResponse === "function") {
             out = options.transformResponse(data);
           } else {
-            const text = data?.reply ?? data?.message ?? data?.text ?? "";
+            const text = data?.reply ?? data?.message ?? data?.text ?? data?.output ?? "";
             out = { text };
           }
 
