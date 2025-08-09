@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brand Chatbot — Basic Example</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
+      .container { max-width: 760px; margin: 0 auto; }
+      h1 { margin-bottom: 8px; }
+      p { color: #374151; }
+      code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Brand Chatbot — Basic</h1>
+      <p>This page shows how to embed the chatbot and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
+      <p>
+        Edit <code>webhookUrl</code> below with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>brand-chatbot</code>.
+      </p>
+    </div>
+
+    <script src="../brand-chatbot.js"></script>
+    <script>
+      window.BrandChatbot.init({
+        webhookUrl: "https://your-n8n.example.com/webhook/abc123",
+        botName: "Acme Assistant",
+        brandColor: "#2563eb",
+        accentColor: "#0ea5e9",
+        botAvatarUrl: "",
+        userAvatarUrl: "",
+        welcomeMessage: "Hi! I'm your assistant. Ask me anything.",
+        headers: { },
+        darkMode: false,
+        openByDefault: true,
+        allowHTMLInResponses: false,
+        transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }),
+        transformResponse: (data) => data?.reply || data?.message || data?.text || "No response",
+      });
+    </script>
+  </body>
+  </html>
+
+

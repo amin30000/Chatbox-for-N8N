@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brand Chatbot — Dark Theme</title>
+    <style>
+      :root { color-scheme: dark; }
+      body { background: #0b1220; color: #e5e7eb; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
+      .container { max-width: 760px; margin: 0 auto; }
+      h1 { margin-bottom: 8px; }
+      p { color: #cbd5e1; }
+      code { background: #111827; padding: 2px 6px; border-radius: 4px; }
+      a { color: #93c5fd; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Brand Chatbot — Dark</h1>
+      <p>A dark themed example with custom colors, left position and HTML responses allowed.</p>
+    </div>
+
+    <script src="../brand-chatbot.js"></script>
+    <script>
+      window.BrandChatbot.init({
+        webhookUrl: "https://your-n8n.example.com/webhook/abc123",
+        botName: "Night Owl",
+        brandColor: "#6d28d9",
+        accentColor: "#22c55e",
+        botAvatarUrl: "",
+        userAvatarUrl: "",
+        welcomeMessage: "Good evening!",
+        headers: { },
+        darkMode: true,
+        position: "left",
+        openByDefault: false,
+        allowHTMLInResponses: true,
+        transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: { ...ctx.metadata, theme: "dark" } }),
+        transformResponse: (data) => {
+          const html = data?.html;
+          if (html) return { html };
+          const text = data?.reply || data?.message || data?.text || "No response";
+          return { text };
+        },
+      });
+    </script>
+  </body>
+  </html>
+
+
