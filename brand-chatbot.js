@@ -69,6 +69,7 @@
       .bc-panel {
         position: absolute; ${options.position === "left" ? "left" : "right"}: 0; bottom: 72px;
         width: min(360px, calc(100vw - 40px));
+        min-height: 320px;
         max-height: min(70vh, 640px);
         border-radius: 16px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.25);
         background: ${options.darkMode ? "#0b1220" : "#ffffff"};
