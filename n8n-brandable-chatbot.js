@@ -24,7 +24,8 @@
       onEvent: null, // (eventName, data) => void
       transformRequest: null, // (text, ctx) => payload
       transformResponse: null, // (data) => string | { text, html }
-      maxMessages: 200
+      maxMessages: 200,
+      sessionTtlMinutes: 0 // 0 disables inactivity expiration
     };
 
     function generateSessionId() {
@@ -261,6 +262,18 @@
       }
     }
 
+    function computeLastTimestampsFromHistory(history) {
+      let lastBotAt = 0;
+      let lastUserAt = 0;
+      const now = Date.now();
+      for (const msg of history || []) {
+        // If older history doesn't carry timestamps, approximate with now
+        if (msg.role === "bot") lastBotAt = msg.timestamp || now;
+        if (msg.role === "user") lastUserAt = msg.timestamp || now;
+      }
+      return { lastBotAt, lastUserAt };
+    }
+
     function init(userOptions) {
       const options = { ...defaultOptions, ...userOptions };
       if (!options.webhookUrl) {
@@ -268,9 +281,22 @@
         return;
       }
 
-      const sessionState = loadState(options.storageKey) || {};
-      const sessionId = sessionState.sessionId || generateSessionId();
-      const history = Array.isArray(sessionState.history) ? sessionState.history.slice(-options.maxMessages) : [];
+      const stored = loadState(options.storageKey) || {};
+      let sessionId = stored.sessionId || generateSessionId();
+      let history = Array.isArray(stored.history) ? stored.history.slice(-options.maxMessages) : [];
+      // Inactivity TTL check
+      if (options.sessionTtlMinutes && options.sessionTtlMinutes > 0) {
+        const now = Date.now();
+        const ttlMs = options.sessionTtlMinutes * 60 * 1000;
+        const lastUserAt = stored.lastUserAt || 0;
+        const lastBotAt = stored.lastBotAt || 0;
+        const baseTime = lastUserAt || lastBotAt || 0;
+        if (baseTime && now - baseTime > ttlMs) {
+          // Expire session due to inactivity
+          sessionId = generateSessionId();
+          history = [];
+        }
+      }
 
       const shadowRoot = createShadowRoot(options.zIndex);
       const styleEl = createStyles(options);
@@ -278,11 +304,13 @@
       const ui = createUI(options, shadowRoot);
 
       function persist() {
-        saveState(options.storageKey, { sessionId, history });
+        const { lastBotAt, lastUserAt } = computeLastTimestampsFromHistory(history);
+        saveState(options.storageKey, { sessionId, history, lastBotAt, lastUserAt });
       }
 
       function addMessage(role, content) {
         const entry = typeof content === "string" ? { role, text: content } : { role, ...content };
+        entry.timestamp = Date.now();
         history.push(entry);
         while (history.length > options.maxMessages) history.shift();
 

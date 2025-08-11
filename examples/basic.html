@@ -24,7 +24,7 @@
 
     <script src="../n8n-brandable-chatbot.js"></script>
     <script>
-      window.BrandChatbot.init({
+      window.N8NbrandableChatbot.init({
         webhookUrl: "https://automation.vividsol.com/webhook/brand-bot",
         botName: "N8N Brandable Chat Bot By Vividsol.Ai",
         brandColor: "#2563eb",
@@ -38,6 +38,7 @@
         allowHTMLInResponses: true,
         launcherVariant: "icon-text",
         launcherText: "Chat with us",
+        sessionTtlMinutes: 60,
         transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }),
         transformResponse: (data) => data?.reply || data?.message || data?.text || data?.output || "No response",
       });

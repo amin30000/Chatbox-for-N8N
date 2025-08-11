@@ -36,6 +36,7 @@
         position: "left",
         openByDefault: false,
         allowHTMLInResponses: true,
+        sessionTtlMinutes: 60,
         transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: { ...ctx.metadata, theme: "dark" } }),
         transformResponse: (data) => {
           const html = data?.html;

@@ -58,6 +58,7 @@ return [{ reply: `You said: ${$json.message}` }];
 - `transformResponse(data)` -> `string` or `{ text, html }`
 - `onEvent(eventName, data)` -> hooks (ready, toggle, message, error)
 - `storageKey`, `maxMessages`, `typingIndicatorText`
+- `sessionTtlMinutes` (number, minutes). If > 0, a conversation expires after this inactivity period since the last user or bot message. Expiry also applies if the site is closed and later revisited.
 
 Notes
 - Safe-area aware placement for mobile; high z-index; min-height for the panel.
