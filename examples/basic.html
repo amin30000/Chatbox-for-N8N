@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Brand Chatbot — Basic Example</title>
+    <title>N8N Brandable Chatbot — Basic Example</title>
     <style>
       body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
       .container { max-width: 760px; margin: 0 auto; }
@@ -14,19 +14,19 @@
   </head>
   <body>
     <div class="container">
-      <h1>Brand Chatbot By Vividsol.Ai — Basic</h1>
+      <h1>N8N Brandable Chatbot By Vividsol.Ai — Basic</h1>
       <h3>Developer by <a href="https://www.omerfayyaz.com" target="_blank">Omer Fayyaz</a></h3>
       <p>This page shows how to embed the chatbot and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
       <p>
-        Edit <code>webhookUrl</code> below with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>brand-chatbot</code>.
+        Edit <code>webhookUrl</code> below with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>n8n-brandable-chatbot</code>.
       </p>
     </div>
 
-    <script src="../brand-chatbot.js"></script>
+    <script src="../n8n-brandable-chatbot.js"></script>
     <script>
       window.BrandChatbot.init({
         webhookUrl: "https://automation.vividsol.com/webhook/brand-bot",
-        botName: "Branded Bot By Vividsol.Ai",
+        botName: "N8N Brandable Chat Bot By Vividsol.Ai",
         brandColor: "#2563eb",
         accentColor: "#0ea5e9",
         botAvatarUrl: "",
@@ -35,7 +35,9 @@
         headers: { },
         darkMode: false,
         openByDefault: true,
-        allowHTMLInResponses: false,
+        allowHTMLInResponses: true,
+        launcherVariant: "icon-text",
+        launcherText: "Chat with us",
         transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }),
         transformResponse: (data) => data?.reply || data?.message || data?.text || data?.output || "No response",
       });

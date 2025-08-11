@@ -1,5 +1,5 @@
 (() => {
-  const BrandChatbot = (() => {
+  const N8NbrandableChatbot = (() => {
     const defaultOptions = {
       webhookUrl: "",
       method: "POST",
@@ -11,11 +11,12 @@
       userAvatarUrl: "",
       welcomeMessage: "Hi! How can I help you?",
       launcherText: "",
+      launcherVariant: "icon", // 'icon' | 'text' | 'icon-text'
       position: "right", // 'right' | 'left'
       zIndex: 999999,
       openByDefault: false,
       placeholder: "Type your message...",
-      storageKey: "brand-chatbot",
+      storageKey: "n8n-brandable-chatbot",
       typingIndicatorText: "Typing...",
       darkMode: false,
       allowHTMLInResponses: false,
@@ -66,6 +67,9 @@
         background: ${options.brandColor}; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,0.2);
       }
       .bc-launcher svg { width: 26px; height: 26px; }
+      .bc-launcher.bc-launcher--text { width: auto; height: 44px; padding: 0 14px; font-weight: 600; font-size: 14px; }
+      .bc-launcher.bc-launcher--icon-text { width: auto; height: 44px; padding: 0 12px; gap: 8px; }
+      .bc-launcher span { line-height: 1; }
       .bc-panel {
         position: absolute; ${options.position === "left" ? "left" : "right"}: 0; bottom: 72px;
         width: min(360px, calc(100vw - 40px));
@@ -154,11 +158,20 @@
       const launcher = document.createElement("button");
       launcher.className = "bc-launcher";
       launcher.setAttribute("aria-label", options.launcherText || `Open ${options.botName}`);
-      launcher.innerHTML = `
+      const iconSvg = `
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M12 3C7.03 3 3 6.58 3 11c0 2.43 1.23 4.61 3.19 6.11-.09.76-.39 2.02-1.31 3.16 0 0 2.06-.21 3.76-1.45.73.2 1.5.31 2.36.31 4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill="currentColor"/>
-        </svg>
-      `;
+        </svg>`;
+      const launchText = options.launcherText || `Chat`;
+      if (options.launcherVariant === 'text') {
+        launcher.classList.add('bc-launcher--text');
+        launcher.innerHTML = `<span>${launchText}</span>`;
+      } else if (options.launcherVariant === 'icon-text') {
+        launcher.classList.add('bc-launcher--icon-text');
+        launcher.innerHTML = iconSvg + `<span>${launchText}</span>`;
+      } else {
+        launcher.innerHTML = iconSvg;
+      }
 
       const panel = document.createElement("div");
       panel.className = "bc-panel hidden";
@@ -251,7 +264,7 @@
     function init(userOptions) {
       const options = { ...defaultOptions, ...userOptions };
       if (!options.webhookUrl) {
-        console.error("[BrandChatbot] Missing required option: webhookUrl");
+        console.error("[N8NbrandableChatbot] Missing required option: webhookUrl");
         return;
       }
 
@@ -354,13 +367,21 @@
             out = options.transformResponse(data);
           } else {
             const text = data?.reply ?? data?.message ?? data?.text ?? data?.output ?? "";
-            out = { text };
+            if (options.allowHTMLInResponses && typeof text === "string" && /<[^>]+>/.test(text)) {
+              out = { html: text };
+            } else {
+              out = { text };
+            }
           }
 
           setTyping(false);
 
           if (typeof out === "string") {
-            addMessage("bot", { text: out });
+            if (options.allowHTMLInResponses && /<[^>]+>/.test(out)) {
+              addMessage("bot", { html: out });
+            } else {
+              addMessage("bot", { text: out });
+            }
           } else if (out && typeof out === "object") {
             const { text, html } = out;
             if (options.allowHTMLInResponses && html) {
@@ -424,7 +445,7 @@
     return { init };
   })();
 
-  window.BrandChatbot = BrandChatbot;
+  window.N8NbrandableChatbot = N8NbrandableChatbot;
 })();
 
 
