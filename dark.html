@@ -3,34 +3,33 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>N8N Brandable Chatbot — Basic Example</title>
+    <title>N8N Brandable Chatbot — Dark Theme</title>
     <style>
-      body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
+      :root { color-scheme: dark; }
+      body { background: #0b1220; color: #e5e7eb; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
       .container { max-width: 760px; margin: 0 auto; }
       h1 { margin-bottom: 8px; }
-      p { color: #374151; }
-      code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+      p { color: #cbd5e1; }
+      code { background: #111827; padding: 2px 6px; border-radius: 4px; }
+      a { color: #93c5fd; }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>N8N Brandable Chatbot</h1>
+      <h1>N8N Brandable Chat Bot — Dark</h1>
       <h3>Developed by <a href="https://www.omerfayyaz.com" target="_blank">Omer Fayyaz</a></h3>
-      <p>This page shows how to embed the chatbot and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
-      <p>
-        Edit <code>webhookUrl</code> with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>n8n-brandable-chatbot</code>.
-      </p>
-
+      <p>A dark themed example with custom colors, left position and HTML responses allowed.</p>
+      
       <button onclick="window.N8NbrandableChatbot.api.open()">Open Chatbot</button>
       <button onclick="window.N8NbrandableChatbot.api.close()">Close Chatbot</button>
       <button onclick="window.N8NbrandableChatbot.api.toggle()">Toggle Chatbot</button>
       <button onclick="window.N8NbrandableChatbot.api.clear()">Clear Chatbot</button>
       <button onclick="window.N8NbrandableChatbot.api.send('Hello')">Send "Hello" Message</button>
-      
+
       <hr />
       <h2>How this example works</h2>
       <p>
-        The widget is loaded from <code>../n8n-brandable-chatbot.js</code> and initialized with
+        The widget is loaded from <code>n8n-brandable-chatbot.js</code> and initialized with
         <code>window.N8NbrandableChatbot.init({...})</code>. After init, the same API is exposed at
         <code>window.N8NbrandableChatbot.api</code>, which is used by the buttons above.
       </p>
@@ -40,10 +39,12 @@
   const api = window.N8NbrandableChatbot.init({
     webhookUrl: "https://your-n8n/webhook/abc123",
     botName: "Acme Assistant",
-    brandColor: "#2563eb",
-    accentColor: "#0ea5e9",
+    brandColor: "#6d28d9",
+    accentColor: "#22c55e",
+    position: "left",
     launcherVariant: "icon-text",
     launcherText: "Chat with us",
+    darkMode: true,
     allowHTMLInResponses: true
   });
   // api.open(); api.close(); api.toggle(); api.send("Hi"); api.clear(); api.getSessionId();
@@ -73,28 +74,33 @@
   "metadata": { }
 }</code></pre>
       <p>Default parsing (can be customized via <code>transformResponse</code>): looks for <code>reply</code> → <code>message</code> → <code>text</code> → <code>output</code> or plain text.</p>
-
     </div>
 
-    <script src="../n8n-brandable-chatbot.js"></script>
+    <script src="n8n-brandable-chatbot.js"></script>
     <script>
       window.N8NbrandableChatbot.init({
         webhookUrl: "https://automation.vividsol.com/webhook/brand-bot",
         botName: "N8N Brandable Chat Bot",
-        brandColor: "#2563eb",
-        accentColor: "#0ea5e9",
+        brandColor: "#6d28d9",
+        accentColor: "#22c55e",
         botAvatarUrl: "",
         userAvatarUrl: "",
-        welcomeMessage: "Hi! I'm your assistant. Ask me anything.",
+        welcomeMessage: "Good evening!",
         headers: { },
-        darkMode: false,
-        openByDefault: true,
+        darkMode: true,
+        position: "left",
+        openByDefault: false,
         allowHTMLInResponses: true,
         launcherVariant: "icon-text",
         launcherText: "Chat with us",
         sessionTtlMinutes: 60,
-        transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }),
-        transformResponse: (data) => data?.reply || data?.message || data?.text || data?.output || "No response",
+        transformRequest: (text, ctx) => ({ message: text, sessionId: ctx.sessionId, metadata: { ...ctx.metadata, theme: "dark" } }),
+        transformResponse: (data) => {
+          const html = data?.html;
+          if (html) return { html };
+          const text = data?.reply || data?.message || data?.text || data?.output || "No response";
+          return { text };
+        },
       });
     </script>
   </body>

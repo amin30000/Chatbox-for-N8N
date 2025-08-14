@@ -446,6 +446,31 @@
         sendToWebhook(value);
       });
 
+      // Inactivity/session TTL: when exceeded while panel is open, reset and inform user
+      function expireSessionDueToInactivity() {
+        setTyping(false);
+        sessionId = generateSessionId();
+        history = [];
+        ui.messages.innerHTML = "";
+        persist();
+        if (!ui.panel.classList.contains("hidden")) {
+          addMessage("bot", { text: "Session expired due to inactivity. Starting a new session." });
+        }
+        if (typeof options.onEvent === "function") options.onEvent("sessionExpired", { sessionId });
+      }
+
+      if (options.sessionTtlMinutes && options.sessionTtlMinutes > 0) {
+        const ttlMs = options.sessionTtlMinutes * 60 * 1000;
+        const intervalMs = Math.min(Math.max(15000, Math.floor(ttlMs / 3)), 60000);
+        setInterval(() => {
+          const { lastBotAt, lastUserAt } = computeLastTimestampsFromHistory(history);
+          const baseTime = Math.max(lastUserAt || 0, lastBotAt || 0);
+          if (baseTime && Date.now() - baseTime > ttlMs) {
+            expireSessionDueToInactivity();
+          }
+        }, intervalMs);
+      }
+
       reopenFromOption();
 
       const api = {

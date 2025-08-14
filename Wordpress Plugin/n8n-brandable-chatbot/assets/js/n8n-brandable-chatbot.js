@@ -152,6 +152,26 @@
       ui.launcher.addEventListener('click', () => { ui.panel.classList.toggle('hidden'); if (typeof options.onEvent === 'function') options.onEvent('toggle', { open: !ui.panel.classList.contains('hidden') }); });
       ui.header.querySelector('.bc-close').addEventListener('click', () => { ui.panel.classList.add('hidden'); if (typeof options.onEvent === 'function') options.onEvent('toggle', { open: false }); });
       ui.inputBar.addEventListener('submit', (e) => { e.preventDefault(); const input = ui.inputBar.querySelector('input[type="text"]'); const value = (input.value || '').trim(); if (!value) return; addMessage('user', { text: value }); input.value=''; sendToWebhook(value); });
+      // Inactivity/session TTL check: if exceeded while panel is open, reset and inform user
+      function expireSessionDueToInactivity(){
+        try{ const typing = ui.messages && ui.messages.querySelector('[data-typing="true"]'); if (typing) typing.remove(); }catch(e){}
+        try{ ui.messages.innerHTML=''; }catch(e){}
+        sessionId = generateSessionId();
+        history = [];
+        try{ scrollToBottom(ui.messages); }catch(e){}
+        if (!ui.panel.classList.contains('hidden')) { addMessage('bot', { text: 'Session expired due to inactivity. Starting a new session.' }); }
+        if (typeof options.onEvent === 'function') options.onEvent('sessionExpired', { sessionId });
+      }
+      if (options.sessionTtlMinutes && options.sessionTtlMinutes > 0) {
+        const ttlMs = options.sessionTtlMinutes * 60 * 1000;
+        const intervalMs = Math.min(Math.max(15000, Math.floor(ttlMs/3)), 60000);
+        setInterval(() => {
+          const now = Date.now();
+          const lastTimes = computeLastTimestampsFromHistory(history);
+          const baseTime = Math.max(lastTimes.lastUserAt||0, lastTimes.lastBotAt||0);
+          if (baseTime && now - baseTime > ttlMs) { expireSessionDueToInactivity(); }
+        }, intervalMs);
+      }
       reopenFromOption();
       const api = { open: () => ui.panel.classList.remove('hidden'), close: () => ui.panel.classList.add('hidden'), toggle: () => ui.panel.classList.toggle('hidden'), send: (text) => { addMessage('user', { text }); sendToWebhook(text); }, clear: () => { history.splice(0, history.length); ui.messages.innerHTML=''; }, getSessionId: () => sessionId };
       if (typeof options.onEvent === 'function') options.onEvent('ready', { sessionId });
