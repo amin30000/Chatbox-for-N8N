@@ -1,7 +1,7 @@
 <?php
 /*
-Plugin Name: N8N Brandable Chatbot
-Description: A brandable chat widget that connects to an n8n Webhook. Adds a shortcode [n8n_brandable_chatbot] and optional auto-injection.
+Plugin Name: Brandable Custom Chatbox for N8N
+Description: A brandable chat widget that connects to an n8n Webhook. Adds a shortcode [n8n_brandable_chatbox] and optional auto-injection.
 Version: 1.0.0
 Author: Muhammad Omer Fayyaz<omerfayyaz.com>
 Required WordPress version: 6.0
@@ -13,15 +13,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class N8N_Brandable_Chatbot_Plugin {
-    const OPTION_KEY = 'n8n_brandable_chatbot_options';
+class N8N_Brandable_Chatbox_Plugin {
+    const OPTION_KEY = 'n8n_brandable_chatbox_options';
 
     public function __construct() {
         add_action('admin_menu', [$this, 'register_admin_menu']);
         add_action('admin_init', [$this, 'register_settings']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('wp_footer', [$this, 'maybe_auto_inject'], 999);
-        add_shortcode('n8n_brandable_chatbot', [$this, 'shortcode_handler']);
+        add_shortcode('n8n_brandable_chatbox', [$this, 'shortcode_handler']);
     }
 
     private function get_default_options() {
@@ -31,7 +31,7 @@ class N8N_Brandable_Chatbot_Plugin {
             'headers_json' => '',
             'brand_color' => '#2563eb',
             'accent_color' => '#0ea5e9',
-            'bot_name' => 'Chatbot',
+            'bot_name' => 'Chatbox',
             'bot_avatar_url' => '',
             'user_avatar_url' => '',
             'welcome_message' => 'Hi! How can I help you?',
@@ -42,7 +42,7 @@ class N8N_Brandable_Chatbot_Plugin {
             'z_index' => 999999,
             'open_by_default' => false,
             'placeholder' => 'Type your message...',
-            'storage_key' => 'n8n-brandable-chatbot',
+            'storage_key' => 'n8n-brandable-chatbox',
             'typing_indicator_text' => 'Typing...',
             'dark_mode' => false,
             'allow_html' => false,
@@ -63,10 +63,10 @@ class N8N_Brandable_Chatbot_Plugin {
 
     public function register_admin_menu() {
         add_options_page(
-            'N8N Brandable Chatbot',
-            'N8N Brandable Chatbot',
+            'Brandable Custom Chatbox for N8N',
+            'Brandable Custom Chatbox for N8N',
             'manage_options',
-            'n8n-brandable-chatbot',
+            'n8n-brandable-chatbox',
             [$this, 'render_settings_page']
         );
     }
@@ -78,9 +78,9 @@ class N8N_Brandable_Chatbot_Plugin {
             'default' => $this->get_default_options(),
         ]);
 
-        add_settings_section('n8n_brandable_chatbot_main', 'Chatbot Settings', function () {
-            echo '<p>Configure the chatbot that connects to your n8n Webhook.</p>';
-        }, 'n8n-brandable-chatbot');
+        add_settings_section('n8n_brandable_chatbox_main', 'Chatbox Settings', function () {
+            echo '<p>Configure the chatbox that connects to your n8n Webhook.</p>';
+        }, 'n8n-brandable-chatbox');
 
         $fields = [
             ['webhook_url', 'Webhook URL', 'text'],
@@ -125,7 +125,7 @@ class N8N_Brandable_Chatbot_Plugin {
                 } else {
                     printf('<input type="text" class="regular-text" name="%s" value="%s" />', esc_attr($name), esc_attr($value));
                 }
-            }, 'n8n-brandable-chatbot', 'n8n_brandable_chatbot_main');
+            }, 'n8n-brandable-chatbox', 'n8n_brandable_chatbox_main');
         }
     }
 
@@ -166,20 +166,20 @@ class N8N_Brandable_Chatbot_Plugin {
             return;
         }
         echo '<div class="wrap">';
-        echo '<h1>N8N Brandable Chatbot</h1>';
+        echo '<h1>Brandable Custom Chatbox for N8N</h1>';
         echo '<form method="post" action="options.php">';
         settings_fields(self::OPTION_KEY);
-        do_settings_sections('n8n-brandable-chatbot');
+        do_settings_sections('n8n-brandable-chatbox');
         submit_button();
         echo '</form>';
-        echo '<p><strong>Shortcode:</strong> [n8n_brandable_chatbot]</p>';
+        echo '<p><strong>Shortcode:</strong> [n8n_brandable_chatbox]</p>';
         echo '<p><strong>Note:</strong> For headers/extra context, provide valid JSON objects.</p>';
         echo '</div>';
     }
 
     public function enqueue_frontend_assets() {
-        $handle = 'n8n-brandable-chatbot-widget';
-        $src = plugins_url('assets/js/n8n-brandable-chatbot.js', __FILE__);
+        $handle = 'n8n-brandable-chatbox-widget';
+        $src = plugins_url('assets/js/n8n-brandable-chatbox.js', __FILE__);
         wp_register_script($handle, $src, [], '1.0.0', true);
         wp_enqueue_script($handle);
     }
@@ -234,7 +234,7 @@ class N8N_Brandable_Chatbot_Plugin {
         $response_field = esc_js($opts['response_field']);
         $dispatch_events = !empty($opts['dispatch_events']);
 
-        echo "\n<script>\n(function(){\n  try {\n    var cfg = $config_json;\n    cfg.transformRequest = function(text, ctx){ return { message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }; };\n    cfg.transformResponse = function(data){\n      var allowHtml = !!cfg.allowHTMLInResponses;\n      function maybeHtml(value){\n        if (allowHtml && typeof value === 'string' && /<[^>]+>/.test(value)) { return { html: value }; }\n        return value;\n      }\n      if (data && typeof data === 'object') {\n        if (Object.prototype.hasOwnProperty.call(data, 'html') && typeof data.html === 'string') return { html: data.html };\n        if (Object.prototype.hasOwnProperty.call(data, '$response_field')) return maybeHtml(data['$response_field']);\n        if (Object.prototype.hasOwnProperty.call(data, 'reply')) return maybeHtml(data['reply']);\n        if (Object.prototype.hasOwnProperty.call(data, 'output')) return maybeHtml(data['output']);\n        if (Object.prototype.hasOwnProperty.call(data, 'message')) return maybeHtml(data['message']);\n        if (Object.prototype.hasOwnProperty.call(data, 'text')) return maybeHtml(data['text']);\n      }\n      if (typeof data === 'string') return maybeHtml(data);\n      return 'No response';\n    };\n    " . ($dispatch_events ? "cfg.onEvent = function(eventName, detail){ try { window.dispatchEvent(new CustomEvent('n8nbrandablechatbot:' + eventName, { detail: detail })); } catch(e){} };" : "") . "\n    if (window.N8NbrandableChatbot && typeof window.N8NbrandableChatbot.init === 'function') {\n      window.N8NbrandableChatbot.init(cfg);\n    }\n  } catch(e) { if (window.console && console.error) console.error(e); }\n})();\n</script>\n";
+        echo "\n<script>\n(function(){\n  try {\n    var cfg = $config_json;\n    cfg.transformRequest = function(text, ctx){ return { message: text, sessionId: ctx.sessionId, metadata: ctx.metadata }; };\n    cfg.transformResponse = function(data){\n      var allowHtml = !!cfg.allowHTMLInResponses;\n      function maybeHtml(value){\n        if (allowHtml && typeof value === 'string' && /<[^>]+>/.test(value)) { return { html: value }; }\n        return value;\n      }\n      if (data && typeof data === 'object') {\n        if (Object.prototype.hasOwnProperty.call(data, 'html') && typeof data.html === 'string') return { html: data.html };\n        if (Object.prototype.hasOwnProperty.call(data, '$response_field')) return maybeHtml(data['$response_field']);\n        if (Object.prototype.hasOwnProperty.call(data, 'reply')) return maybeHtml(data['reply']);\n        if (Object.prototype.hasOwnProperty.call(data, 'output')) return maybeHtml(data['output']);\n        if (Object.prototype.hasOwnProperty.call(data, 'message')) return maybeHtml(data['message']);\n        if (Object.prototype.hasOwnProperty.call(data, 'text')) return maybeHtml(data['text']);\n      }\n      if (typeof data === 'string') return maybeHtml(data);\n      return 'No response';\n    };\n    " . ($dispatch_events ? "cfg.onEvent = function(eventName, detail){ try { window.dispatchEvent(new CustomEvent('n8nbrandablechatbox:' + eventName, { detail: detail })); } catch(e){} };" : "") . "\n    if (window.N8NbrandableChatbox && typeof window.N8NbrandableChatbox.init === 'function') {\n      window.N8NbrandableChatbox.init(cfg);\n    }\n  } catch(e) { if (window.console && console.error) console.error(e); }\n})();\n</script>\n";
     }
 
     public function maybe_auto_inject() {
@@ -271,7 +271,7 @@ class N8N_Brandable_Chatbot_Plugin {
             'max_messages' => '',
             'session_ttl_minutes' => '',
             'dispatch_events' => '',
-        ], $atts, 'n8n_brandable_chatbot');
+        ], $atts, 'n8n_brandable_chatbox');
 
         $overrides = [];
         foreach ($atts as $k => $v) {
@@ -292,6 +292,6 @@ class N8N_Brandable_Chatbot_Plugin {
     }
 }
 
-new N8N_Brandable_Chatbot_Plugin();
+new N8N_Brandable_Chatbox_Plugin();
 
 

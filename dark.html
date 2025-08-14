@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>N8N Brandable Chatbot — Dark Theme</title>
+    <title>Brandable Custom Chatbox for N8N — Dark Theme</title>
     <style>
       :root { color-scheme: dark; }
       body { background: #0b1220; color: #e5e7eb; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
@@ -16,33 +16,33 @@
   </head>
   <body>
     <div class="container">
-      <h1>N8N Brandable Chat Bot — Dark</h1>
+      <h1>Brandable Custom Chatbox for N8N — Dark</h1>
       <h3>Developed by <a href="https://www.omerfayyaz.com" target="_blank">Omer Fayyaz</a></h3>
-      <p>This page shows how to embed the chatbot and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
+      <p>This page shows how to embed the chatbox and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
       <p>
-        Edit <code>webhookUrl</code> with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>n8n-brandable-chatbot</code>.
+        Edit <code>webhookUrl</code> with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>n8n-brandable-chatbox</code>.
       </p>
       <div style="margin: 12px 0;">
         <a href="index.html" style="display:inline-block;padding:8px 12px;border-radius:8px;background:#e5e7eb;color:#111827;text-decoration:none;">Switch to light example</a>
       </div>
       
-      <button onclick="window.N8NbrandableChatbot.api.open()">Open Chatbot</button>
-      <button onclick="window.N8NbrandableChatbot.api.close()">Close Chatbot</button>
-      <button onclick="window.N8NbrandableChatbot.api.toggle()">Toggle Chatbot</button>
-      <button onclick="window.N8NbrandableChatbot.api.clear()">Clear Chatbot</button>
-      <button onclick="window.N8NbrandableChatbot.api.send('Hello')">Send "Hello" Message</button>
+      <button onclick="window.N8NbrandableChatbox.api.open()">Open Chatbox</button>
+      <button onclick="window.N8NbrandableChatbox.api.close()">Close Chatbox</button>
+      <button onclick="window.N8NbrandableChatbox.api.toggle()">Toggle Chatbox</button>
+      <button onclick="window.N8NbrandableChatbox.api.clear()">Clear Chatbox</button>
+      <button onclick="window.N8NbrandableChatbox.api.send('Hello')">Send "Hello" Message</button>
 
       <hr />
       <h2>How this example works</h2>
       <p>
-        The widget is loaded from <code>n8n-brandable-chatbot.js</code> and initialized with
-        <code>window.N8NbrandableChatbot.init({...})</code>. After init, the same API is exposed at
-        <code>window.N8NbrandableChatbot.api</code>, which is used by the buttons above.
+        The widget is loaded from <code>n8n-brandable-chatbox.js</code> and initialized with
+        <code>window.N8NbrandableChatbox.init({...})</code>. After init, the same API is exposed at
+        <code>window.N8NbrandableChatbox.api</code>, which is used by the buttons above.
       </p>
       <h3>Embed + init</h3>
-      <pre><code>&lt;script src="/path/to/n8n-brandable-chatbot.js"&gt;&lt;/script&gt;
+      <pre><code>&lt;script src="/path/to/n8n-brandable-chatbox.js"&gt;&lt;/script&gt;
 &lt;script&gt;
-  const api = window.N8NbrandableChatbot.init({
+  const api = window.N8NbrandableChatbox.init({
     webhookUrl: "https://your-n8n/webhook/abc123",
     botName: "Acme Assistant",
     brandColor: "#6d28d9",
@@ -82,11 +82,11 @@
       <p>Default parsing (can be customized via <code>transformResponse</code>): looks for <code>reply</code> → <code>message</code> → <code>text</code> → <code>output</code> or plain text.</p>
     </div>
 
-    <script src="n8n-brandable-chatbot.js"></script>
+    <script src="n8n-brandable-chatbox.js"></script>
     <script>
-      window.N8NbrandableChatbot.init({
+      window.N8NbrandableChatbox.init({
         webhookUrl: "https://automation.vividsol.com/webhook/da571a6a-052d-46e7-b9e4-cf97f0ca1cf0",
-        botName: "N8N Brandable Chat Bot",
+        botName: "Brandable Custom Chatbox for N8N",
         brandColor: "#6d28d9",
         accentColor: "#22c55e",
         botAvatarUrl: "",

@@ -1,13 +1,13 @@
 /* Bundled widget copied from project root for WordPress plugin usage */
 (() => {
-  const N8NbrandableChatbot = (() => {
+  const N8NbrandableChatbox = (() => {
     const defaultOptions = {
       webhookUrl: "",
       method: "POST",
       headers: {},
       brandColor: "#2563eb",
       accentColor: "#0ea5e9",
-      botName: "Chatbot",
+      botName: "Chatbox",
       botAvatarUrl: "",
       userAvatarUrl: "",
       welcomeMessage: "Hi! How can I help you?",
@@ -17,7 +17,7 @@
       zIndex: 999999,
       openByDefault: false,
       placeholder: "Type your message...",
-      storageKey: "n8n-brandable-chatbot",
+      storageKey: "n8n-brandable-chatbox",
       typingIndicatorText: "Typing...",
       darkMode: false,
       allowHTMLInResponses: false,
@@ -137,7 +137,7 @@
     function saveState(k, s) { try { localStorage.setItem(k, JSON.stringify(s)); } catch { } }
     function computeLastTimestampsFromHistory(history){ let lastBotAt=0, lastUserAt=0; const now=Date.now(); for(const msg of history||[]){ if(msg.role==='bot') lastBotAt = msg.timestamp || now; if(msg.role==='user') lastUserAt = msg.timestamp || now; } return { lastBotAt, lastUserAt }; }
     function init(userOptions) {
-      const options = { ...defaultOptions, ...userOptions }; if (!options.webhookUrl) { console.error('[N8NbrandableChatbot] Missing required option: webhookUrl'); return; }
+      const options = { ...defaultOptions, ...userOptions }; if (!options.webhookUrl) { console.error('[N8NbrandableChatbox] Missing required option: webhookUrl'); return; }
       const stored = loadState(options.storageKey) || {}; let sessionId = stored.sessionId || generateSessionId(); let history = Array.isArray(stored.history) ? stored.history.slice(-options.maxMessages) : [];
       if (options.sessionTtlMinutes && options.sessionTtlMinutes > 0) { const now=Date.now(); const ttlMs = options.sessionTtlMinutes*60*1000; const lastActivityAt = Math.max(stored.lastUserAt||0, stored.lastBotAt||0); if (lastActivityAt && now - lastActivityAt > ttlMs) { sessionId = generateSessionId(); history = []; } }
       const shadowRoot = createShadowRoot(options.zIndex); const styleEl = createStyles(options); shadowRoot.appendChild(styleEl); const ui = createUI(options, shadowRoot);
@@ -175,12 +175,12 @@
       reopenFromOption();
       const api = { open: () => ui.panel.classList.remove('hidden'), close: () => ui.panel.classList.add('hidden'), toggle: () => ui.panel.classList.toggle('hidden'), send: (text) => { addMessage('user', { text }); sendToWebhook(text); }, clear: () => { history.splice(0, history.length); ui.messages.innerHTML=''; }, getSessionId: () => sessionId };
       if (typeof options.onEvent === 'function') options.onEvent('ready', { sessionId });
-      try { if (window && window.N8NbrandableChatbot) { window.N8NbrandableChatbot.api = api; } } catch(e) {}
+      try { if (window && window.N8NbrandableChatbox) { window.N8NbrandableChatbox.api = api; } } catch(e) {}
       return api;
     }
     return { init };
   })();
-  window.N8NbrandableChatbot = N8NbrandableChatbot;
+  window.N8NbrandableChatbox = N8NbrandableChatbox;
 })();
 
 

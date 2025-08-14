@@ -1,12 +1,12 @@
 (() => {
-  const N8NbrandableChatbot = (() => {
+  const N8NbrandableChatbox = (() => {
     const defaultOptions = {
       webhookUrl: "",
       method: "POST",
       headers: {},
       brandColor: "#2563eb",
       accentColor: "#0ea5e9",
-      botName: "Chatbot",
+      botName: "Chatbox",
       botAvatarUrl: "",
       userAvatarUrl: "",
       welcomeMessage: "Hi! How can I help you?",
@@ -16,7 +16,7 @@
       zIndex: 999999,
       openByDefault: false,
       placeholder: "Type your message...",
-      storageKey: "n8n-brandable-chatbot",
+      storageKey: "n8n-brandable-chatbox",
       typingIndicatorText: "Typing...",
       darkMode: false,
       allowHTMLInResponses: false,
@@ -276,7 +276,7 @@
     function init(userOptions) {
       const options = { ...defaultOptions, ...userOptions };
       if (!options.webhookUrl) {
-        console.error("[N8NbrandableChatbot] Missing required option: webhookUrl");
+        console.error("[N8NbrandableChatbox] Missing required option: webhookUrl");
         return;
       }
 
@@ -491,7 +491,7 @@
 
       if (typeof options.onEvent === "function") options.onEvent("ready", { sessionId });
 
-      try { if (window && window.N8NbrandableChatbot) { window.N8NbrandableChatbot.api = api; } } catch (e) {}
+      try { if (window && window.N8NbrandableChatbox) { window.N8NbrandableChatbox.api = api; } } catch (e) {}
 
       return api;
     }
@@ -499,7 +499,7 @@
     return { init };
   })();
 
-  window.N8NbrandableChatbot = N8NbrandableChatbot;
+  window.N8NbrandableChatbox = N8NbrandableChatbox;
 })();
 
 

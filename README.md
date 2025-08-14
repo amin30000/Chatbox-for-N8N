@@ -1,4 +1,4 @@
-## N8N Brandable Chatbot (n8n Webhook)
+## Brandable Custom Chatbox for N8N (n8n Webhook)
 
 A lightweight, brandable chat widget you can embed on any website that talks to your n8n Webhook. It renders inside a Shadow DOM to avoid CSS collisions, supports theming, and persists conversation locally with session expiration.
 
@@ -13,10 +13,10 @@ A lightweight, brandable chat widget you can embed on any website that talks to 
 - Modern UI: glassy panel (backdrop blur), gradient accents, smooth animations, hover/focus states, custom scrollbar
 
 ### Files
-- `n8n-brandable-chatbot.js`: The widget script (vanilla JS, no deps)
+- `n8n-brandable-chatbox.js`: The widget script (vanilla JS, no deps)
 - `index.html`: Minimal example (light theme)
 - `dark.html`: Dark theme example with left-side launcher and HTML responses
-- `Wordpress Plugin/n8n-brandable-chatbot/`: WordPress plugin (zipped in the same folder)
+- `Wordpress Plugin/n8n-brandable-chatbox/`: WordPress plugin (zipped in the same folder)
 
 ## Quick start (local examples)
 1. Open `index.html` (or `dark.html`).
@@ -27,9 +27,9 @@ A lightweight, brandable chat widget you can embed on any website that talks to 
 Add the script and initialize the widget. Capture the returned API if you want to control the widget programmatically.
 
 ```html
-<script src="/path/to/n8n-brandable-chatbot.js"></script>
+<script src="/path/to/n8n-brandable-chatbox.js"></script>
 <script>
-  const chatbot = window.N8NbrandableChatbot.init({
+  const chatbox = window.N8NbrandableChatbox.init({
     webhookUrl: "https://your-n8n.example.com/webhook/abc123",
     botName: "Acme Assistant",
     brandColor: "#2563eb",
@@ -41,21 +41,21 @@ Add the script and initialize the widget. Capture the returned API if you want t
   });
 
   // Optional control
-  // chatbot.open(); chatbot.close(); chatbot.toggle();
-  // chatbot.send("Hello"); chatbot.clear();
-  // console.log(chatbot.getSessionId());
+  // chatbox.open(); chatbox.close(); chatbox.toggle();
+  // chatbox.send("Hello"); chatbox.clear();
+  // console.log(chatbox.getSessionId());
 </script>
 ```
 
 ### Optional: Global API on window
-After initialization, the same API is also exposed at `window.N8NbrandableChatbot.api` for easy access in inline handlers:
+After initialization, the same API is also exposed at `window.N8NbrandableChatbox.api` for easy access in inline handlers:
 
 ```html
-<button onclick="window.N8NbrandableChatbot.api.open()">Open Chatbot</button>
-<button onclick="window.N8NbrandableChatbot.api.close()">Close Chatbot</button>
-<button onclick="window.N8NbrandableChatbot.api.toggle()">Toggle Chatbot</button>
-<button onclick="window.N8NbrandableChatbot.api.clear()">Clear Chatbot</button>
-<button onclick="window.N8NbrandableChatbot.api.send('Hello')">Send Message</button>
+<button onclick="window.N8NbrandableChatbox.api.open()">Open Chatbox</button>
+<button onclick="window.N8NbrandableChatbox.api.close()">Close Chatbox</button>
+<button onclick="window.N8NbrandableChatbox.api.toggle()">Toggle Chatbox</button>
+<button onclick="window.N8NbrandableChatbox.api.clear()">Clear Chatbox</button>
+<button onclick="window.N8NbrandableChatbox.api.send('Hello')">Send Message</button>
 ```
 
 ## Configuration (options)
@@ -64,7 +64,7 @@ After initialization, the same API is also exposed at `window.N8NbrandableChatbo
 - headers (object, default {}): extra headers to send
 - brandColor (string, default "#2563eb"): primary color (bubble and UI accents)
 - accentColor (string, default "#0ea5e9"): secondary color (send button, links)
-- botName (string, default "Chatbot"): header title and default avatar letter
+- botName (string, default "Chatbox"): header title and default avatar letter
 - botAvatarUrl (string): custom bot avatar image URL
 - userAvatarUrl (string): custom user avatar image URL
 - welcomeMessage (string): first message from the bot on a new session
@@ -74,7 +74,7 @@ After initialization, the same API is also exposed at `window.N8NbrandableChatbo
 - zIndex (number, default 999999): stacking context
 - openByDefault (boolean, default false): panel initially open
 - placeholder (string, default "Type your message..."): input placeholder
-- storageKey (string, default "n8n-brandable-chatbot"): localStorage key used for persistence
+- storageKey (string, default "n8n-brandable-chatbox"): localStorage key used for persistence
 - typingIndicatorText (string, default "Typing...")
 - darkMode (boolean, default false): render dark UI
 - allowHTMLInResponses (boolean, default false): if true, will render HTML safely
@@ -95,7 +95,7 @@ After initialization, the same API is also exposed at `window.N8NbrandableChatbo
 - clear(): clear message history in the UI and storage
 - getSessionId(): current session identifier
 
-The same methods are available as `window.N8NbrandableChatbot.api` after `init()` completes.
+The same methods are available as `window.N8NbrandableChatbox.api` after `init()` completes.
 
 ## Webhook contract (n8n)
 Default request body when `transformRequest` is not provided:
@@ -131,12 +131,12 @@ return [{ reply: `You said: ${$json.message}` }];
 - Smooth open/close (fade + translate), visible focus states, subtle shadows
 
 ## WordPress plugin
-The folder `Wordpress Plugin/n8n-brandable-chatbot` contains a ready-to-install plugin and a `n8n-brandable-chatbot.zip` archive.
+The folder `Wordpress Plugin/n8n-brandable-chatbox` contains a ready-to-install plugin and a `n8n-brandable-chatbox.zip` archive.
 
 ### Install
 1. In WordPress admin, go to Plugins → Add New → Upload Plugin
-2. Upload `n8n-brandable-chatbot.zip` and activate
-3. Go to Settings → N8N Brandable Chatbot to configure
+2. Upload `n8n-brandable-chatbox.zip` and activate
+3. Go to Settings → Brandable Custom Chatbox for N8N to configure
 
 ### Configure
 Key fields mirror the widget options:
@@ -151,15 +151,15 @@ Key fields mirror the widget options:
 Enable “Auto-inject on all pages” to include the widget site-wide using your saved settings.
 
 ### Shortcode
-Use `[n8n_brandable_chatbot]` to render on specific pages. All settings are overridable via attributes. Examples:
+Use `[n8n_brandable_chatbox]` to render on specific pages. All settings are overridable via attributes. Examples:
 
 ```text
-[n8n_brandable_chatbot webhook_url="https://your-n8n/webhook/abc123" bot_name="Acme Assistant" dark_mode="true" position="left" launcher_variant="icon-text" launcher_text="Chat"]
+[n8n_brandable_chatbox webhook_url="https://your-n8n/webhook/abc123" bot_name="Acme Assistant" dark_mode="true" position="left" launcher_variant="icon-text" launcher_text="Chat"]
 
 ; Boolean/number attributes are parsed: open_by_default, dark_mode, allow_html, dispatch_events, z_index, max_messages, session_ttl_minutes
 ```
 
-When “Dispatch window CustomEvents” is enabled, the plugin sets `onEvent` to dispatch `n8nbrandablechatbot:<event>` events on `window` for `ready`, `toggle`, `message`, `error`.
+When “Dispatch window CustomEvents” is enabled, the plugin sets `onEvent` to dispatch `n8nbrandablechatbox:<event>` events on `window` for `ready`, `toggle`, `message`, `error`.
 
 ## Troubleshooting
 - Ensure the webhook URL is reachable from the browser and CORS is configured
