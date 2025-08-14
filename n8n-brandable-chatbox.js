@@ -61,7 +61,18 @@
       const css = `
       :host { all: initial; }
       *, *::before, *::after { box-sizing: border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
-      .bc-container { position: fixed; ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px)); bottom: max(20px, env(safe-area-inset-bottom, 20px)); }
+      
+      /* Container - ensure it's always positioned relative to viewport */
+      .bc-container { 
+        position: fixed !important; 
+        ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px)); 
+        bottom: max(20px, env(safe-area-inset-bottom, 20px)) !important; 
+        z-index: ${options.zIndex};
+        pointer-events: none;
+      }
+      
+      /* Ensure launcher and panel have pointer events */
+      .bc-launcher, .bc-panel { pointer-events: auto; }
 
       /* Launcher */
       .bc-launcher {
@@ -71,6 +82,8 @@
         color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
         will-change: transform;
+        position: relative;
+        z-index: 1;
       }
       .bc-launcher:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,0.28); filter: brightness(1.03); }
       .bc-launcher:active { transform: translateY(0); box-shadow: 0 8px 20px rgba(0,0,0,0.22); }
@@ -80,9 +93,11 @@
       .bc-launcher.bc-launcher--icon-text { width: auto; height: 44px; padding: 0 12px; gap: 8px; border-radius: 9999px; }
       .bc-launcher span { line-height: 1; }
 
-      /* Panel */
+      /* Panel - ensure it's positioned correctly relative to launcher */
       .bc-panel {
-        position: absolute; ${options.position === "left" ? "left" : "right"}: 0; bottom: 72px;
+        position: absolute !important; 
+        ${options.position === "left" ? "left" : "right"}: 0; 
+        bottom: 72px;
         width: min(380px, calc(100vw - 40px));
         min-height: 340px;
         max-height: min(72vh, 680px);
@@ -93,6 +108,7 @@
         color: ${options.darkMode ? "#f5f7fb" : "#0b1220"};
         display: flex; flex-direction: column; border: 1px solid ${options.darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)"};
         opacity: 1; transform: translateY(0); transition: opacity 220ms ease, transform 220ms ease;
+        z-index: 2;
       }
       .bc-panel.hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
 
@@ -145,6 +161,35 @@
       /* Animations */
       @keyframes bc-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
       @keyframes bc-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+      /* Mobile-specific improvements */
+      @media (max-width: 768px) {
+        .bc-container {
+          ${options.position === "left" ? "left" : "right"}: max(16px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 16px)) !important;
+          bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
+        }
+        .bc-panel {
+          width: calc(100vw - 32px);
+          max-height: 70vh;
+          bottom: 68px;
+        }
+        .bc-launcher {
+          width: 52px;
+          height: 52px;
+        }
+        .bc-launcher svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+      /* Ensure safe area support for mobile devices */
+      @supports (padding: max(0px)) {
+        .bc-container {
+          ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}));
+          bottom: max(20px, env(safe-area-inset-bottom));
+        }
+      }
       `;
       const style = document.createElement("style");
       style.textContent = css;

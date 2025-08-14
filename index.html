@@ -2,14 +2,51 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Brandable Custom Chatbox for N8N — Basic Example</title>
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Brandable Custom Chatbox for N8N" />
+    <meta property="og:description" content="A lightweight, brandable chat widget that connects to n8n Webhooks. Features modern UI, theming, and WordPress plugin support." />
+    <meta property="og:url" content="https://omerfayyaz.com/n8n-brandable-chatbox/index.html" />
+    <meta property="og:image" content="https://omerfayyaz.com/n8n-brandable-chatbox/n8n-brandable-chatbox.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Brandable Custom Chatbox for N8N - Modern chat widget interface" />
+    <meta property="og:site_name" content="Omer Fayyaz" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Brandable Custom Chatbox for N8N" />
+    <meta name="twitter:description" content="A lightweight, brandable chat widget that connects to n8n Webhooks. Features modern UI, theming, and WordPress plugin support." />
+    <meta name="twitter:image" content="https://omerfayyaz.com/n8n-brandable-chatbox/n8n-brandable-chatbox.jpg" />
+    <meta name="twitter:image:alt" content="Brandable Custom Chatbox for N8N - Modern chat widget interface" />
+    
+    <!-- WhatsApp/Facebook specific -->
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image:type" content="image/jpeg" />
+    
     <style>
       body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; padding: 40px; }
       .container { max-width: 760px; margin: 0 auto; }
       h1 { margin-bottom: 8px; }
       p { color: #374151; }
       code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; }
+      
+      /* Ensure chatbox positioning works correctly on mobile */
+      @media (max-width: 768px) {
+        body { padding: 20px; }
+        .container { max-width: 100%; }
+      }
+      
+      /* Prevent any CSS conflicts with chatbox positioning */
+      * { box-sizing: border-box; }
+      html, body { 
+        position: relative; 
+        overflow-x: hidden; 
+        min-height: 100vh;
+      }
     </style>
   </head>
   <body>
@@ -117,7 +154,7 @@
         welcomeMessage: "Hi! I'm your assistant. Ask me anything.",
         headers: { },
         darkMode: false,
-        openByDefault: true,
+        openByDefault: false,
         allowHTMLInResponses: true,
         launcherVariant: "icon-text",
         launcherText: "Chat with us",
