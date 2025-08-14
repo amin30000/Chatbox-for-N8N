@@ -19,9 +19,16 @@ A lightweight, brandable chat widget you can embed on any website that talks to 
 - `Wordpress Plugin/n8n-brandable-chatbox/`: WordPress plugin (zipped in the same folder)
 
 ## Quick start (local examples)
+
 1. Open `index.html` (or `dark.html`).
 2. Change `webhookUrl` to your n8n Webhook URL.
 3. Open the HTML file in a browser.
+
+## 🌐 Live Demo
+
+**Try it online:** [Live Demo](https://omerfayyaz.com/n8n-brandable-chatbox/index.html)
+
+Experience the chatbox widget in action with a working n8n webhook integration. The demo showcases all features including light/dark themes, HTML responses, and session management.
 
 ## Embed on any website
 Add the script and initialize the widget. Capture the returned API if you want to control the widget programmatically.
