@@ -1,5 +1,5 @@
 === N8N Brandable Chatbot ===
-Contributors: Omer Fayyaz, Vividsol.ai
+Contributors: Omer Fayyaz
 Tags: chatbot, n8n, webhook, support, assistant
 Requires at least: 5.5
 Tested up to: 6.5
@@ -15,7 +15,7 @@ This plugin embeds a lightweight chat widget on your site and sends user message
 == Installation ==
 1. Upload the `n8n-brandable-chatbot` folder to `/wp-content/plugins/`.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to Settings → Brand Chatbot and set your Webhook URL and options.
+3. Go to Settings → N8N Brandable Chatbot and set your Webhook URL and options.
 
 == Usage ==
 - Shortcode: `[n8n_brandable_chatbot]`
