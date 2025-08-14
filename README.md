@@ -14,12 +14,12 @@ A lightweight, brandable chat widget you can embed on any website that talks to 
 
 ### Files
 - `n8n-brandable-chatbot.js`: The widget script (vanilla JS, no deps)
-- `basic.html`: Minimal example (light theme)
+- `index.html`: Minimal example (light theme)
 - `dark.html`: Dark theme example with left-side launcher and HTML responses
 - `Wordpress Plugin/n8n-brandable-chatbot/`: WordPress plugin (zipped in the same folder)
 
 ## Quick start (local examples)
-1. Open `basic.html` (or `dark.html`).
+1. Open `index.html` (or `dark.html`).
 2. Change `webhookUrl` to your n8n Webhook URL.
 3. Open the HTML file in a browser.
 
@@ -168,7 +168,7 @@ When “Dispatch window CustomEvents” is enabled, the plugin sets `onEvent` to
 - If sessions do not reset, set `sessionTtlMinutes` > 0
 
 ## Examples
-- See `basic.html` and `dark.html` for end-to-end usage, including `transformRequest` and `transformResponse` samples and control buttons using the global API
+- See `index.html` and `dark.html` for end-to-end usage, including `transformRequest` and `transformResponse` samples and control buttons using the global API
 
 ## License
 MIT

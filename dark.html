@@ -18,7 +18,13 @@
     <div class="container">
       <h1>N8N Brandable Chat Bot — Dark</h1>
       <h3>Developed by <a href="https://www.omerfayyaz.com" target="_blank">Omer Fayyaz</a></h3>
-      <p>A dark themed example with custom colors, left position and HTML responses allowed.</p>
+      <p>This page shows how to embed the chatbot and connect it to an n8n Webhook. Open the widget from the floating button at the bottom-right.</p>
+      <p>
+        Edit <code>webhookUrl</code> with your n8n URL. The widget persists conversation in <code>localStorage</code> under the key <code>n8n-brandable-chatbot</code>.
+      </p>
+      <div style="margin: 12px 0;">
+        <a href="index.html" style="display:inline-block;padding:8px 12px;border-radius:8px;background:#e5e7eb;color:#111827;text-decoration:none;">Switch to light example</a>
+      </div>
       
       <button onclick="window.N8NbrandableChatbot.api.open()">Open Chatbot</button>
       <button onclick="window.N8NbrandableChatbot.api.close()">Close Chatbot</button>
@@ -89,7 +95,7 @@
         headers: { },
         darkMode: true,
         position: "left",
-        openByDefault: false,
+        openByDefault: true,
         allowHTMLInResponses: true,
         launcherVariant: "icon-text",
         launcherText: "Chat with us",
