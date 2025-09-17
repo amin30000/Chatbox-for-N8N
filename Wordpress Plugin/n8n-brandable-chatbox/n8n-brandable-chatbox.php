@@ -3,7 +3,7 @@
 Plugin Name: Brandable Custom Chatbox for N8N
 Description: A brandable chat widget that connects to an n8n Webhook. Adds a shortcode [n8n_brandable_chatbox] and optional auto-injection.
 Version: 1.0.0
-Author: Muhammad Omer Fayyaz<omerfayyaz.com>
+Author: Amin Ramezani
 Required WordPress version: 6.0
 Required PHP version: 8.0
 License: MIT
