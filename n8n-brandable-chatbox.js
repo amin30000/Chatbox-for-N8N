@@ -21,6 +21,8 @@
       darkMode: false,
       allowHTMLInResponses: false,
       extraContext: {},
+      layout: "widget", // 'widget' | 'fullscreen'
+      fullScreen: false,
       onEvent: null, // (eventName, data) => void
       transformRequest: null, // (text, ctx) => payload
       transformResponse: null, // (data) => string | { text, html }
@@ -63,14 +65,23 @@
       *, *::before, *::after { box-sizing: border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
       
       /* Container - ensure it's always positioned relative to viewport */
-      .bc-container { 
-        position: fixed !important; 
-        ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px)); 
-        bottom: max(20px, env(safe-area-inset-bottom, 20px)) !important; 
+      .bc-container {
+        position: fixed !important;
+        ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px));
+        bottom: max(20px, env(safe-area-inset-bottom, 20px)) !important;
         z-index: ${options.zIndex};
         pointer-events: none;
       }
-      
+
+      .bc-container--fullscreen {
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+      }
+
       /* Ensure launcher and panel have pointer events */
       .bc-launcher, .bc-panel { pointer-events: auto; }
 
@@ -95,8 +106,8 @@
 
       /* Panel - ensure it's positioned correctly relative to launcher */
       .bc-panel {
-        position: absolute !important; 
-        ${options.position === "left" ? "left" : "right"}: 0; 
+        position: absolute !important;
+        ${options.position === "left" ? "left" : "right"}: 0;
         bottom: 72px;
         width: min(380px, calc(100vw - 40px));
         min-height: 340px;
@@ -111,6 +122,19 @@
         z-index: 2;
       }
       .bc-panel.hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+      .bc-panel--fullscreen {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        min-height: 100vh !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
 
       /* Header */
       .bc-header {
@@ -164,7 +188,7 @@
 
       /* Mobile-specific improvements */
       @media (max-width: 768px) {
-        .bc-container {
+      .bc-container {
           ${options.position === "left" ? "left" : "right"}: max(16px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 16px)) !important;
           bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
         }
@@ -197,29 +221,19 @@
     }
 
     function createUI(options, shadowRoot) {
+      const isFullscreen = options.fullScreen === true;
       const container = document.createElement("div");
       container.className = "bc-container";
-
-      const launcher = document.createElement("button");
-      launcher.className = "bc-launcher";
-      launcher.setAttribute("aria-label", options.launcherText || `Open ${options.botName}`);
-      const iconSvg = `
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M12 3C7.03 3 3 6.58 3 11c0 2.43 1.23 4.61 3.19 6.11-.09.76-.39 2.02-1.31 3.16 0 0 2.06-.21 3.76-1.45.73.2 1.5.31 2.36.31 4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill="currentColor"/>
-        </svg>`;
-      const launchText = options.launcherText || `Chat`;
-      if (options.launcherVariant === 'text') {
-        launcher.classList.add('bc-launcher--text');
-        launcher.innerHTML = `<span>${launchText}</span>`;
-      } else if (options.launcherVariant === 'icon-text') {
-        launcher.classList.add('bc-launcher--icon-text');
-        launcher.innerHTML = iconSvg + `<span>${launchText}</span>`;
-      } else {
-        launcher.innerHTML = iconSvg;
-      }
+      if (isFullscreen) container.classList.add("bc-container--fullscreen");
 
       const panel = document.createElement("div");
-      panel.className = "bc-panel hidden";
+      const panelClasses = ["bc-panel"];
+      if (isFullscreen) {
+        panelClasses.push("bc-panel--fullscreen");
+      } else {
+        panelClasses.push("hidden");
+      }
+      panel.className = panelClasses.join(" ");
 
       const header = document.createElement("div");
       header.className = "bc-header";
@@ -251,7 +265,28 @@
       powered.innerHTML = `Developed by <a href="https://www.omerfayyaz.com" target="_blank" rel="noopener noreferrer">Omer Fayyaz</a>`;
       panel.appendChild(powered);
       container.appendChild(panel);
-      container.appendChild(launcher);
+
+      let launcher = null;
+      if (!isFullscreen) {
+        launcher = document.createElement("button");
+        launcher.className = "bc-launcher";
+        launcher.setAttribute("aria-label", options.launcherText || `Open ${options.botName}`);
+        const iconSvg = `
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3C7.03 3 3 6.58 3 11c0 2.43 1.23 4.61 3.19 6.11-.09.76-.39 2.02-1.31 3.16 0 0 2.06-.21 3.76-1.45.73.2 1.5.31 2.36.31 4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill="currentColor"/>
+        </svg>`;
+        const launchText = options.launcherText || `Chat`;
+        if (options.launcherVariant === 'text') {
+          launcher.classList.add('bc-launcher--text');
+          launcher.innerHTML = `<span>${launchText}</span>`;
+        } else if (options.launcherVariant === 'icon-text') {
+          launcher.classList.add('bc-launcher--icon-text');
+          launcher.innerHTML = iconSvg + `<span>${launchText}</span>`;
+        } else {
+          launcher.innerHTML = iconSvg;
+        }
+        container.appendChild(launcher);
+      }
 
       shadowRoot.appendChild(container);
 
@@ -325,6 +360,10 @@
         return;
       }
 
+      const isFullscreen = options.fullScreen === true || options.layout === "fullscreen";
+      options.fullScreen = isFullscreen;
+      options.layout = isFullscreen ? "fullscreen" : "widget";
+
       const stored = loadState(options.storageKey) || {};
       let sessionId = stored.sessionId || generateSessionId();
       let history = Array.isArray(stored.history) ? stored.history.slice(-options.maxMessages) : [];
@@ -386,6 +425,10 @@
       }
 
       function reopenFromOption() {
+        if (options.fullScreen) {
+          ui.panel.classList.remove("hidden");
+          return;
+        }
         if (options.openByDefault) ui.panel.classList.remove("hidden");
       }
 
@@ -472,10 +515,12 @@
       }
 
       // Events
-      ui.launcher.addEventListener("click", () => {
-        ui.panel.classList.toggle("hidden");
-        if (typeof options.onEvent === "function") options.onEvent("toggle", { open: !ui.panel.classList.contains("hidden") });
-      });
+      if (ui.launcher) {
+        ui.launcher.addEventListener("click", () => {
+          ui.panel.classList.toggle("hidden");
+          if (typeof options.onEvent === "function") options.onEvent("toggle", { open: !ui.panel.classList.contains("hidden") });
+        });
+      }
       ui.header.querySelector(".bc-close").addEventListener("click", () => {
         ui.panel.classList.add("hidden");
         if (typeof options.onEvent === "function") options.onEvent("toggle", { open: false });

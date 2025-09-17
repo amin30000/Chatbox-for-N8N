@@ -117,9 +117,23 @@
         <li><code>brandColor</code>, <code>accentColor</code>: theming</li>
         <li><code>launcherVariant</code>: <code>icon</code> | <code>text</code> | <code>icon-text</code></li>
         <li><code>darkMode</code>, <code>position</code>, <code>openByDefault</code></li>
+        <li><code>layout</code>: <code>widget</code> (default) or <code>fullscreen</code> for a full viewport experience (legacy <code>fullScreen: true</code> is also accepted)</li>
         <li><code>allowHTMLInResponses</code>: safely render HTML replies</li>
         <li><code>extraContext</code>: appended to each request as <code>metadata</code></li>
       </ul>
+
+      <h3>Fullscreen layout</h3>
+      <p>
+        Enable an immersive full-page assistant by setting <code>layout: "fullscreen"</code> (or <code>fullScreen: true</code>).
+        The chat panel covers the entire viewport while the JavaScript API (<code>open</code>, <code>close</code>, <code>toggle</code>, and more) keeps working.
+      </p>
+      <pre><code>&lt;script&gt;
+  window.N8NbrandableChatbox.init({
+    webhookUrl: "https://your-n8n/webhook/abc123",
+    layout: "fullscreen",
+    darkMode: true
+  });
+&lt;/script&gt;</code></pre>
 
       <h3>API methods</h3>
       <ul>
