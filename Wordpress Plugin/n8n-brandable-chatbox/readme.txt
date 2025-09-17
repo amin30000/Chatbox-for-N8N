@@ -18,9 +18,12 @@ This plugin embeds a lightweight chat widget on your site and sends user message
 3. Go to Settings → Brandable Custom Chatbox for N8N and set your Webhook URL and options.
 
 == Usage ==
-- Shortcode: `[n8n_brandable_chatbox]`
-  - Attributes (optional): `webhook_url, brand_color, accent_color, bot_name, bot_avatar_url, user_avatar_url, welcome_message, launcher_text, launcher_variant, position, z_index, open_by_default, placeholder, storage_key, typing_indicator_text, dark_mode, allow_html, headers_json, extra_context_json, response_field, max_messages, session_ttl_minutes, dispatch_events`.
+- Shortcodes:
+  - Widget: `[n8n_brandable_chatbox]`
+  - Fullscreen: `[n8n_brandable_chatbox_fullscreen]`
+  - Shared attributes (optional): `webhook_url, brand_color, accent_color, bot_name, bot_avatar_url, user_avatar_url, welcome_message, launcher_text, launcher_variant, position, z_index, open_by_default, placeholder, storage_key, typing_indicator_text, dark_mode, allow_html, headers_json, extra_context_json, response_field, max_messages, session_ttl_minutes, dispatch_events`.
   - `launcher_variant` accepts `icon`, `text`, or `icon-text`.
+  - The fullscreen shortcode automatically opens the chat and hides the floating launcher.
 - Auto-inject: Enable “Auto-inject on all pages” in settings.
   - Optional: “Dispatch window CustomEvents” to receive events on `window` like `n8nbrandablechatbox:ready`, `n8nbrandablechatbox:toggle`, `n8nbrandablechatbox:message`, `n8nbrandablechatbox:error`.
 

@@ -22,6 +22,7 @@ class N8N_Brandable_Chatbox_Plugin {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_frontend_assets']);
         add_action('wp_footer', [$this, 'maybe_auto_inject'], 999);
         add_shortcode('n8n_brandable_chatbox', [$this, 'shortcode_handler']);
+        add_shortcode('n8n_brandable_chatbox_fullscreen', [$this, 'fullscreen_shortcode_handler']);
     }
 
     private function get_default_options() {
@@ -52,6 +53,7 @@ class N8N_Brandable_Chatbox_Plugin {
             'session_ttl_minutes' => 0,
             'auto_inject' => false,
             'dispatch_events' => false,
+            'display_mode' => 'widget',
         ];
     }
 
@@ -158,6 +160,7 @@ class N8N_Brandable_Chatbox_Plugin {
         $out['session_ttl_minutes'] = isset($input['session_ttl_minutes']) ? max(0, intval($input['session_ttl_minutes'])) : 0;
         $out['auto_inject'] = !empty($input['auto_inject']) ? true : false;
         $out['dispatch_events'] = !empty($input['dispatch_events']) ? true : false;
+        $out['display_mode'] = isset($input['display_mode']) && in_array($input['display_mode'], ['widget', 'fullscreen'], true) ? $input['display_mode'] : $defaults['display_mode'];
         return $out;
     }
 
@@ -172,7 +175,7 @@ class N8N_Brandable_Chatbox_Plugin {
         do_settings_sections('n8n-brandable-chatbox');
         submit_button();
         echo '</form>';
-        echo '<p><strong>Shortcode:</strong> [n8n_brandable_chatbox]</p>';
+        echo '<p><strong>Shortcodes:</strong> [n8n_brandable_chatbox] or [n8n_brandable_chatbox_fullscreen]</p>';
         echo '<p><strong>Note:</strong> For headers/extra context, provide valid JSON objects.</p>';
         echo '</div>';
     }
@@ -228,6 +231,7 @@ class N8N_Brandable_Chatbox_Plugin {
             'extraContext' => $extra,
             'maxMessages' => (int) $opts['max_messages'],
             'sessionTtlMinutes' => (int) $opts['session_ttl_minutes'],
+            'displayMode' => $opts['display_mode'],
         ];
 
         $config_json = wp_json_encode($config);
@@ -271,6 +275,7 @@ class N8N_Brandable_Chatbox_Plugin {
             'max_messages' => '',
             'session_ttl_minutes' => '',
             'dispatch_events' => '',
+            'display_mode' => '',
         ], $atts, 'n8n_brandable_chatbox');
 
         $overrides = [];
@@ -280,6 +285,11 @@ class N8N_Brandable_Chatbox_Plugin {
                     $overrides[$k] = filter_var($v, FILTER_VALIDATE_BOOLEAN);
                 } elseif (in_array($k, ['z_index','max_messages','session_ttl_minutes'], true)) {
                     $overrides[$k] = intval($v);
+                } elseif ($k === 'display_mode') {
+                    $mode = strtolower($v);
+                    if (in_array($mode, ['widget', 'fullscreen'], true)) {
+                        $overrides[$k] = $mode;
+                    }
                 } else {
                     $overrides[$k] = $v;
                 }
@@ -289,6 +299,14 @@ class N8N_Brandable_Chatbox_Plugin {
         ob_start();
         $this->output_init_script($overrides);
         return ob_get_clean();
+    }
+
+    public function fullscreen_shortcode_handler($atts = []) {
+        $atts['display_mode'] = 'fullscreen';
+        if (!isset($atts['open_by_default'])) {
+            $atts['open_by_default'] = 'true';
+        }
+        return $this->shortcode_handler($atts);
     }
 }
 
