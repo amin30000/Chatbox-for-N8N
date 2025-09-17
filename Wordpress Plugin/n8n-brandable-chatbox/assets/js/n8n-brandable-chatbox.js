@@ -25,7 +25,8 @@
       transformRequest: null, // (text, ctx) => payload
       transformResponse: null, // (data) => string | { text, html }
       maxMessages: 200,
-      sessionTtlMinutes: 0 // 0 disables inactivity expiration
+      sessionTtlMinutes: 0, // 0 disables inactivity expiration
+      displayMode: "widget" // 'widget' | 'fullscreen'
     };
 
     function generateSessionId() {
@@ -58,15 +59,16 @@
     }
 
     function createStyles(options) {
+      const isFullscreen = options.displayMode === "fullscreen";
       const css = `
       :host { all: initial; }
       *, *::before, *::after { box-sizing: border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
       
       /* Container - ensure it's always positioned relative to viewport */
-      .bc-container { 
-        position: fixed !important; 
-        ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px)); 
-        bottom: max(20px, env(safe-area-inset-bottom, 20px)) !important; 
+      .bc-container {
+        position: fixed !important;
+        ${options.position === "left" ? "left" : "right"}: max(20px, env(safe-area-inset-${options.position === "left" ? "left" : "right"}, 20px));
+        bottom: max(20px, env(safe-area-inset-bottom, 20px)) !important;
         z-index: ${options.zIndex};
         pointer-events: none;
       }
@@ -95,8 +97,8 @@
 
       /* Panel - ensure it's positioned correctly relative to launcher */
       .bc-panel {
-        position: absolute !important; 
-        ${options.position === "left" ? "left" : "right"}: 0; 
+        position: absolute !important;
+        ${options.position === "left" ? "left" : "right"}: 0;
         bottom: 72px;
         width: min(380px, calc(100vw - 40px));
         min-height: 340px;
@@ -190,6 +192,43 @@
           bottom: max(20px, env(safe-area-inset-bottom));
         }
       }
+      ${isFullscreen ? `
+      .bc-container {
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        pointer-events: auto !important;
+      }
+      .bc-panel {
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: ${options.darkMode ? "#0b1220" : "#ffffff"} !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+      .bc-panel.hidden {
+        opacity: 0 !important;
+        transform: none !important;
+        pointer-events: none !important;
+        display: none !important;
+      }
+      .bc-launcher {
+        display: none !important;
+      }
+      .bc-close {
+        display: none !important;
+      }
+      ` : ""}
       `;
       const style = document.createElement("style");
       style.textContent = css;
@@ -199,23 +238,27 @@
     function createUI(options, shadowRoot) {
       const container = document.createElement("div");
       container.className = "bc-container";
+      const isFullscreen = options.displayMode === "fullscreen";
 
-      const launcher = document.createElement("button");
-      launcher.className = "bc-launcher";
-      launcher.setAttribute("aria-label", options.launcherText || `Open ${options.botName}`);
-      const iconSvg = `
-        <svg viewBox="0 0 24 24" fill="none">
-          <path d="M12 3C7.03 3 3 6.58 3 11c0 2.43 1.23 4.61 3.19 6.11-.09.76-.39 2.02-1.31 3.16 0 0 2.06-.21 3.76-1.45.73.2 1.5.31 2.36.31 4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill="currentColor"/>
-        </svg>`;
-      const launchText = options.launcherText || `Chat`;
-      if (options.launcherVariant === 'text') {
-        launcher.classList.add('bc-launcher--text');
-        launcher.innerHTML = `<span>${launchText}</span>`;
-      } else if (options.launcherVariant === 'icon-text') {
-        launcher.classList.add('bc-launcher--icon-text');
-        launcher.innerHTML = iconSvg + `<span>${launchText}</span>`;
-      } else {
-        launcher.innerHTML = iconSvg;
+      let launcher = null;
+      if (!isFullscreen) {
+        launcher = document.createElement("button");
+        launcher.className = "bc-launcher";
+        launcher.setAttribute("aria-label", options.launcherText || `Open ${options.botName}`);
+        const iconSvg = `
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M12 3C7.03 3 3 6.58 3 11c0 2.43 1.23 4.61 3.19 6.11-.09.76-.39 2.02-1.31 3.16 0 0 2.06-.21 3.76-1.45.73.2 1.5.31 2.36.31 4.97 0 9-3.58 9-8s-4.03-8-9-8z" fill="currentColor"/>
+          </svg>`;
+        const launchText = options.launcherText || `Chat`;
+        if (options.launcherVariant === "text") {
+          launcher.classList.add("bc-launcher--text");
+          launcher.innerHTML = `<span>${launchText}</span>`;
+        } else if (options.launcherVariant === "icon-text") {
+          launcher.classList.add("bc-launcher--icon-text");
+          launcher.innerHTML = iconSvg + `<span>${launchText}</span>`;
+        } else {
+          launcher.innerHTML = iconSvg;
+        }
       }
 
       const panel = document.createElement("div");
@@ -251,7 +294,9 @@
       powered.innerHTML = `Developed by <a href="https://www.omerfayyaz.com" target="_blank" rel="noopener noreferrer">Omer Fayyaz</a>`;
       panel.appendChild(powered);
       container.appendChild(panel);
-      container.appendChild(launcher);
+      if (launcher) {
+        container.appendChild(launcher);
+      }
 
       shadowRoot.appendChild(container);
 
@@ -320,6 +365,9 @@
 
     function init(userOptions) {
       const options = { ...defaultOptions, ...userOptions };
+      if (options.displayMode === "fullscreen") {
+        options.openByDefault = true;
+      }
       if (!options.webhookUrl) {
         console.error("[N8NbrandableChatbox] Missing required option: webhookUrl");
         return;
@@ -386,7 +434,9 @@
       }
 
       function reopenFromOption() {
-        if (options.openByDefault) ui.panel.classList.remove("hidden");
+        if (options.openByDefault || options.displayMode === "fullscreen") {
+          ui.panel.classList.remove("hidden");
+        }
       }
 
       // Restore history
@@ -472,10 +522,12 @@
       }
 
       // Events
-      ui.launcher.addEventListener("click", () => {
-        ui.panel.classList.toggle("hidden");
-        if (typeof options.onEvent === "function") options.onEvent("toggle", { open: !ui.panel.classList.contains("hidden") });
-      });
+      if (ui.launcher) {
+        ui.launcher.addEventListener("click", () => {
+          ui.panel.classList.toggle("hidden");
+          if (typeof options.onEvent === "function") options.onEvent("toggle", { open: !ui.panel.classList.contains("hidden") });
+        });
+      }
       ui.header.querySelector(".bc-close").addEventListener("click", () => {
         ui.panel.classList.add("hidden");
         if (typeof options.onEvent === "function") options.onEvent("toggle", { open: false });
